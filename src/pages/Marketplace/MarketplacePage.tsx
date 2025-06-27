@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { mockProjects, mockUsers } from '../../utils/mockData';
+import { mockProjects, mockUsers, refreshMockData } from '../../utils/mockData';
 import { ProjectCard } from '../../components/Project/ProjectCard';
 import { ProjectFilters } from '../../components/Project/ProjectFilters';
 import { Platform, ProjectStatus } from '../../types';
@@ -10,13 +10,20 @@ import { Target, Plus } from 'lucide-react';
 
 export const MarketplacePage: React.FC = () => {
   const { user } = useAuth();
+  const [projects, setProjects] = useState(mockProjects);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPlatform, setSelectedPlatform] = useState<Platform | 'all'>('all');
   const [selectedStatus, setSelectedStatus] = useState<ProjectStatus | 'all'>('open');
   const [budgetRange, setBudgetRange] = useState<[number, number]>([0, 0]);
 
+  // Refresh data when component mounts to get latest from localStorage
+  useEffect(() => {
+    refreshMockData();
+    setProjects([...mockProjects]);
+  }, []);
+
   const filteredProjects = useMemo(() => {
-    return mockProjects.filter(project => {
+    return projects.filter(project => {
       const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            project.description.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesPlatform = selectedPlatform === 'all' || project.platform === selectedPlatform;
@@ -27,7 +34,7 @@ export const MarketplacePage: React.FC = () => {
       
       return matchesSearch && matchesPlatform && matchesStatus && matchesBudget;
     });
-  }, [searchTerm, selectedPlatform, selectedStatus, budgetRange]);
+  }, [projects, searchTerm, selectedPlatform, selectedStatus, budgetRange]);
 
   const handleClaimProject = (projectId: string) => {
     // In a real app, this would make an API call

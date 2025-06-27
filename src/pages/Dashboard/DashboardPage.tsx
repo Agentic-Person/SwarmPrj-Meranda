@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { mockProjects, mockUsers } from '../../utils/mockData';
+import { mockProjects, mockUsers, refreshMockData } from '../../utils/mockData';
 import { ProjectCard } from '../../components/Project/ProjectCard';
 import { Button } from '../../components/UI/Button';
 import { Link } from 'react-router-dom';
@@ -8,8 +8,15 @@ import { Plus, Clock, CheckCircle, DollarSign, Zap, Activity, Target } from 'luc
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth();
+  const [projects, setProjects] = useState(mockProjects);
 
-  const userProjects = mockProjects.filter(p => 
+  // Refresh data when component mounts to get latest from localStorage
+  useEffect(() => {
+    refreshMockData();
+    setProjects([...mockProjects]);
+  }, []);
+
+  const userProjects = projects.filter(p => 
     user?.role === 'creator' ? p.creatorId === user.id : p.finisherId === user.id
   );
 

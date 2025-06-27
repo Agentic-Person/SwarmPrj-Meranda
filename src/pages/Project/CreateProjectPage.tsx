@@ -5,7 +5,8 @@ import { Button } from '../../components/UI/Button';
 import { Input } from '../../components/UI/Input';
 import { Select } from '../../components/UI/Select';
 import { Textarea } from '../../components/UI/Textarea';
-import { Platform } from '../../types';
+import { Platform, Project } from '../../types';
+import { addMockProject } from '../../utils/mockData';
 import { Zap, Target, Brain, CheckCircle } from 'lucide-react';
 
 const platformOptions = [
@@ -43,7 +44,25 @@ export const CreateProjectPage: React.FC = () => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // In a real app, this would create the project and run the diagnostic engine
+    // Create the new project object
+    const newProject: Project = {
+      id: `project-${Date.now()}`, // Simple unique ID for demo
+      title: formData.title,
+      description: formData.description,
+      desiredOutcome: formData.desiredOutcome,
+      platform: formData.platform,
+      appLink: formData.appLink,
+      budget: formData.budget ? parseInt(formData.budget) : undefined,
+      status: 'open',
+      creatorId: user!.id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    // Add the project to mock data (this will persist to localStorage)
+    addMockProject(newProject);
+    
+    // Show success message
     alert('Mission deployed successfully! The swarm intelligence is analyzing your request...');
     
     setIsSubmitting(false);
