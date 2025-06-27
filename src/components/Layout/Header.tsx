@@ -29,7 +29,7 @@ export const Header: React.FC = () => {
             </Link>
           </div>
 
-          {/* Center Navigation - Consistent button sizing */}
+          {/* Center Navigation - Purple background buttons */}
           {user && (
             <nav className="hidden lg:flex items-center space-x-4 flex-1 justify-center">
               <Link
@@ -37,7 +37,7 @@ export const Header: React.FC = () => {
                 className={`w-40 h-12 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border flex items-center justify-center ${
                   isActive('/marketplace')
                     ? 'text-cyan-300 bg-cyan-500/20 border-cyan-500/50 neon-border'
-                    : 'text-slate-300 hover:text-cyan-300 hover:bg-slate-800/50 border-slate-600 hover:border-slate-500'
+                    : 'text-white bg-purple-600/30 border-purple-500/50 hover:bg-purple-600/40 hover:border-purple-400/70'
                 }`}
               >
                 MISSIONS
@@ -47,7 +47,7 @@ export const Header: React.FC = () => {
                 className={`w-40 h-12 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border flex items-center justify-center ${
                   isActive('/dashboard')
                     ? 'text-purple-300 bg-purple-500/20 border-purple-500/50 neon-border'
-                    : 'text-slate-300 hover:text-purple-300 hover:bg-slate-800/50 border-slate-600 hover:border-slate-500'
+                    : 'text-white bg-purple-600/30 border-purple-500/50 hover:bg-purple-600/40 hover:border-purple-400/70'
                 }`}
               >
                 COMMAND CENTER
@@ -55,8 +55,8 @@ export const Header: React.FC = () => {
             </nav>
           )}
 
-          {/* Right Side - Fixed width and consistent spacing with added margin for separation */}
-          <div className="w-[400px] flex items-center justify-end space-x-4 flex-shrink-0 ml-8">
+          {/* Right Side - More separation with increased margin */}
+          <div className="w-[400px] flex items-center justify-end space-x-4 flex-shrink-0 ml-16">
             {user ? (
               <>
                 {/* Treasury and Wallet Widgets - Consistent sizing */}
@@ -147,7 +147,7 @@ export const Header: React.FC = () => {
                 className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-300 terminal-font uppercase tracking-wide border flex items-center ${
                   isActive('/marketplace')
                     ? 'text-cyan-300 bg-cyan-500/20 border-cyan-500/50'
-                    : 'text-slate-300 hover:text-cyan-300 hover:bg-slate-800/50 border-slate-600'
+                    : 'text-white bg-purple-600/30 border-purple-500/50 hover:bg-purple-600/40'
                 }`}
               >
                 MISSIONS
@@ -157,7 +157,7 @@ export const Header: React.FC = () => {
                 className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-300 terminal-font uppercase tracking-wide border flex items-center ${
                   isActive('/dashboard')
                     ? 'text-purple-300 bg-purple-500/20 border-purple-500/50'
-                    : 'text-slate-300 hover:text-purple-300 hover:bg-slate-800/50 border-slate-600'
+                    : 'text-white bg-purple-600/30 border-purple-500/50 hover:bg-purple-600/40'
                 }`}
               >
                 COMMAND
