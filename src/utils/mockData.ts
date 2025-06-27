@@ -435,13 +435,23 @@ export const clearMockData = (): void => {
 
 // Function to get fresh data (useful for components that need to re-read)
 export const refreshMockData = (): void => {
+  // Clear existing arrays
   mockUsers.length = 0;
   mockProjects.length = 0;
   mockReviews.length = 0;
   mockMessages.length = 0;
   
-  mockUsers.push(...loadFromStorage(STORAGE_KEYS.USERS, getDefaultUsers()));
-  mockProjects.push(...loadFromStorage(STORAGE_KEYS.PROJECTS, getDefaultProjects()));
+  // Get the latest default data
+  const latestUsers = getDefaultUsers();
+  const latestProjects = getDefaultProjects();
+  
+  // Save the latest default data to localStorage to ensure consistency
+  saveToStorage(STORAGE_KEYS.USERS, latestUsers);
+  saveToStorage(STORAGE_KEYS.PROJECTS, latestProjects);
+  
+  // Load from localStorage (which now has the latest data) or use defaults
+  mockUsers.push(...loadFromStorage(STORAGE_KEYS.USERS, latestUsers));
+  mockProjects.push(...loadFromStorage(STORAGE_KEYS.PROJECTS, latestProjects));
   mockReviews.push(...loadFromStorage(STORAGE_KEYS.REVIEWS, []));
   mockMessages.push(...loadFromStorage(STORAGE_KEYS.MESSAGES, []));
 };
