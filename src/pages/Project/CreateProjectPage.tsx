@@ -124,6 +124,9 @@ export const CreateProjectPage: React.FC = () => {
     );
   }
 
+  // Get the current SWARM balance - ensure it shows 1000 if not set
+  const currentSwarmBalance = user?.swarmTokens ?? 1000;
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
       <div className="mb-8">
@@ -134,7 +137,7 @@ export const CreateProjectPage: React.FC = () => {
         <div className="mt-4 flex items-center space-x-2 text-sm">
           <Star className="h-4 w-4 text-yellow-400" />
           <span className="text-slate-300">Your SWARM Balance:</span>
-          <span className="text-yellow-400 font-semibold">{user?.swarmTokens || 0} SWARM</span>
+          <span className="text-yellow-400 font-semibold">{currentSwarmBalance} SWARM</span>
         </div>
       </div>
 
