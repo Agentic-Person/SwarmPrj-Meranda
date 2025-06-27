@@ -31,7 +31,7 @@ export const CreateProjectPage: React.FC = () => {
     desiredOutcome: '',
     platform: 'bolt.new' as Platform,
     appLink: '',
-    missionCost: '',
+    missionCost: '100', // Set to mandatory 100 SWARM tokens
     swarmTokenReward: '',
   });
 
@@ -43,10 +43,10 @@ export const CreateProjectPage: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    const missionCost = formData.missionCost ? parseInt(formData.missionCost) : 0;
+    const missionCost = 100; // Fixed at 100 SWARM tokens
     
     // Check if user has enough SWARM tokens
-    if (missionCost > 0 && (user?.swarmTokens || 0) < missionCost) {
+    if ((user?.swarmTokens || 0) < missionCost) {
       alert(`Insufficient SWARM tokens. You need ${missionCost} SWARM tokens but only have ${user?.swarmTokens || 0}.`);
       setIsSubmitting(false);
       return;
@@ -63,7 +63,7 @@ export const CreateProjectPage: React.FC = () => {
       desiredOutcome: formData.desiredOutcome,
       platform: formData.platform,
       appLink: formData.appLink,
-      budget: missionCost || undefined,
+      budget: missionCost,
       swarmTokenReward: formData.swarmTokenReward ? parseInt(formData.swarmTokenReward) : undefined,
       status: 'open',
       creatorId: user!.id,
@@ -74,8 +74,8 @@ export const CreateProjectPage: React.FC = () => {
     // Add the project to mock data
     addMockProject(newProject);
     
-    // Deduct SWARM tokens from user if mission cost is specified
-    if (missionCost > 0 && user) {
+    // Deduct SWARM tokens from user
+    if (user) {
       const updatedUser = {
         ...user,
         swarmTokens: (user.swarmTokens || 0) - missionCost,
@@ -103,7 +103,7 @@ export const CreateProjectPage: React.FC = () => {
       desiredOutcome: '',
       platform: 'bolt.new',
       appLink: '',
-      missionCost: '',
+      missionCost: '100',
       swarmTokenReward: '',
     });
     
@@ -126,6 +126,8 @@ export const CreateProjectPage: React.FC = () => {
 
   // Get the current SWARM balance - ensure it shows 1000 if not set
   const currentSwarmBalance = user?.swarmTokens ?? 1000;
+  const missionCost = 100;
+  const hasInsufficientFunds = currentSwarmBalance < missionCost;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
@@ -137,9 +139,29 @@ export const CreateProjectPage: React.FC = () => {
         <div className="mt-4 flex items-center space-x-2 text-sm">
           <Star className="h-4 w-4 text-yellow-400" />
           <span className="text-slate-300">Your SWARM Balance:</span>
-          <span className="text-yellow-400 font-semibold">{currentSwarmBalance} SWARM</span>
+          <span className={`font-semibold ${hasInsufficientFunds ? 'text-red-400' : 'text-yellow-400'}`}>
+            {currentSwarmBalance} SWARM
+          </span>
+          {hasInsufficientFunds && (
+            <span className="text-red-400 text-xs">(Insufficient for deployment)</span>
+          )}
         </div>
       </div>
+
+      {/* Insufficient Funds Warning */}
+      {hasInsufficientFunds && (
+        <div className="mb-8 bg-red-500/10 border border-red-500/30 rounded-xl p-6">
+          <div className="flex items-center space-x-3">
+            <AlertCircle className="h-6 w-6 text-red-400" />
+            <div>
+              <h3 className="text-lg font-semibold text-red-300">Insufficient SWARM Tokens</h3>
+              <p className="text-red-200 mt-1">
+                You need 100 SWARM tokens to deploy a mission. You currently have {currentSwarmBalance} SWARM tokens.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Success Message */}
       {showSuccess && (
@@ -207,14 +229,23 @@ export const CreateProjectPage: React.FC = () => {
                 />
                 
                 <div className="grid md:grid-cols-2 gap-4">
-                  <Input
-                    label="Mission Cost (Optional)"
-                    type="number"
-                    value={formData.missionCost}
-                    onChange={(e) => handleInputChange('missionCost', e.target.value)}
-                    placeholder="0"
-                    helper="SWARM Tokens required to deploy this mission"
-                  />
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-slate-300 uppercase tracking-wider">
+                      Mission Cost (Required)
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value="100"
+                        disabled
+                        className="block w-full rounded-lg bg-slate-700/50 border border-slate-500 text-white placeholder-slate-400 focus:border-purple-500 focus:ring-purple-500 focus:ring-1 transition-all duration-300 backdrop-blur-sm opacity-75 cursor-not-allowed"
+                      />
+                      <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-purple-500/10 to-cyan-500/10 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                    </div>
+                    <p className="text-sm text-slate-400">
+                      <span className="text-yellow-400 font-semibold">100 SWARM Tokens</span> required to deploy this mission
+                    </p>
+                  </div>
                   
                   <Input
                     label="SWARM Token Reward (Optional)"
@@ -241,9 +272,9 @@ export const CreateProjectPage: React.FC = () => {
                 type="submit"
                 loading={isSubmitting}
                 variant="cyber"
-                disabled={showSuccess}
+                disabled={showSuccess || hasInsufficientFunds}
               >
-                {isSubmitting ? 'Deploying Mission...' : 'Deploy Mission'}
+                {isSubmitting ? 'Deploying Mission...' : 'Deploy Mission (100 SWARM)'}
               </Button>
             </div>
           </form>
@@ -280,13 +311,19 @@ export const CreateProjectPage: React.FC = () => {
           <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-6 mb-6">
             <h3 className="font-semibold text-yellow-300 mb-3 flex items-center">
               <Star className="h-5 w-5 mr-2" />
-              SWARM Token Economy
+              Mission Deployment Cost
             </h3>
             <div className="space-y-2 text-sm text-yellow-200">
-              <p>• Reward agents with SWARM tokens for mission completion</p>
-              <p>• Higher rewards attract more skilled agents</p>
-              <p>• Tokens can be used for premium features and governance</p>
-              <p>• Build reputation through consistent quality delivery</p>
+              <div className="bg-yellow-500/20 border border-yellow-500/40 rounded-lg p-3 mb-3">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-yellow-300 mb-1">100 SWARM</div>
+                  <div className="text-xs text-yellow-200">Required for mission deployment</div>
+                </div>
+              </div>
+              <p>• Ensures serious commitment to mission completion</p>
+              <p>• Funds swarm intelligence processing and coordination</p>
+              <p>• Supports platform development and maintenance</p>
+              <p>• Enables premium agent matching algorithms</p>
             </div>
           </div>
           
