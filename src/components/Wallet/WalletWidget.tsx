@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { WalletData, TokenBalance } from '../../types';
 import { Wallet, ChevronDown, Copy, ExternalLink, Star, Coins, Zap } from 'lucide-react';
@@ -6,17 +6,72 @@ import { Wallet, ChevronDown, Copy, ExternalLink, Star, Coins, Zap } from 'lucid
 export const WalletWidget: React.FC = () => {
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  if (!user?.wallet?.isConnected) {
-    return (
-      <button className="flex items-center space-x-2 px-3 py-2 bg-slate-800/50 rounded-lg border border-slate-600 hover:border-purple-500/50 transition-all duration-300">
-        <Wallet className="h-4 w-4 text-slate-400" />
-        <span className="text-slate-300 text-sm terminal-font">Connect Wallet</span>
-      </button>
-    );
-  }
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
 
-  const wallet = user.wallet;
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // Mock wallet connection for demo
+  const mockWallet: WalletData = {
+    address: '0x742d35Cc6634C0532925a3b8D4C2C4e4C4C4C4C4',
+    isConnected: true,
+    network: 'ethereum',
+    tokens: [
+      {
+        symbol: 'ETH',
+        name: 'Ethereum',
+        balance: 2.45,
+        decimals: 18,
+        usdValue: 5880,
+        contractAddress: '0x0000000000000000000000000000000000000000',
+      },
+      {
+        symbol: 'USDC',
+        name: 'USD Coin',
+        balance: 1250,
+        decimals: 6,
+        usdValue: 1250,
+        contractAddress: '0xA0b86a33E6441c8C4C4C4C4C4C4C4C4C4C4C4C4C',
+      },
+      {
+        symbol: 'SWARM',
+        name: 'SWARM Token',
+        balance: user?.swarmTokens || 1000,
+        decimals: 18,
+        usdValue: (user?.swarmTokens || 1000) * 0.85,
+        contractAddress: '0xSWARM1234567890abcdef1234567890abcdef12',
+      },
+    ],
+    nfts: [
+      {
+        id: 'nft-1',
+        name: 'AI Agent #1337',
+        collection: 'Swarm Agents',
+        image: 'https://images.pexels.com/photos/8566473/pexels-photo-8566473.jpeg?auto=compress&cs=tinysrgb&w=400',
+        rarity: 'Rare',
+      },
+      {
+        id: 'nft-2',
+        name: 'Neural Network #42',
+        collection: 'Digital Minds',
+        image: 'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=400',
+        rarity: 'Epic',
+      },
+    ],
+  };
+
+  const wallet = user?.wallet || mockWallet;
   const totalUsdValue = wallet.tokens.reduce((sum, token) => sum + token.usdValue, 0);
 
   const formatAddress = (address: string) => {
@@ -25,7 +80,8 @@ export const WalletWidget: React.FC = () => {
 
   const copyAddress = () => {
     navigator.clipboard.writeText(wallet.address);
-    // In a real app, you'd show a toast notification
+    // Show a brief feedback
+    alert('Address copied to clipboard!');
   };
 
   const getNetworkColor = (network: string) => {
@@ -39,7 +95,7 @@ export const WalletWidget: React.FC = () => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center space-x-3 px-3 py-2 bg-slate-800/50 rounded-lg border border-slate-600 hover:border-purple-500/50 transition-all duration-300 group"
@@ -50,10 +106,10 @@ export const WalletWidget: React.FC = () => {
           </div>
           <div className="hidden sm:block text-left">
             <div className="text-sm font-medium text-white terminal-font">
-              {formatAddress(wallet.address)}
+              Web3 Wallet
             </div>
             <div className="text-xs text-purple-300 terminal-font">
-              ${totalUsdValue.toFixed(2)}
+              {user?.swarmTokens || 1000} SWARM
             </div>
           </div>
         </div>
@@ -80,7 +136,7 @@ export const WalletWidget: React.FC = () => {
               </button>
             </div>
             <div className="text-sm text-slate-300 terminal-font mb-1">
-              {wallet.address}
+              {formatAddress(wallet.address)}
             </div>
             <div className="text-lg font-bold text-white">
               ${totalUsdValue.toFixed(2)} USD
@@ -148,11 +204,14 @@ export const WalletWidget: React.FC = () => {
             <div className="grid grid-cols-2 gap-2">
               <button className="flex items-center justify-center space-x-2 px-3 py-2 bg-purple-600/20 text-purple-300 rounded-lg hover:bg-purple-600/30 transition-colors text-sm">
                 <ExternalLink className="h-4 w-4" />
-                <span>View on Explorer</span>
+                <span>Explorer</span>
               </button>
-              <button className="flex items-center justify-center space-x-2 px-3 py-2 bg-slate-700/50 text-slate-300 rounded-lg hover:bg-slate-700/70 transition-colors text-sm">
+              <button 
+                onClick={() => setIsOpen(false)}
+                className="flex items-center justify-center space-x-2 px-3 py-2 bg-slate-700/50 text-slate-300 rounded-lg hover:bg-slate-700/70 transition-colors text-sm"
+              >
                 <Wallet className="h-4 w-4" />
-                <span>Disconnect</span>
+                <span>Close</span>
               </button>
             </div>
           </div>
