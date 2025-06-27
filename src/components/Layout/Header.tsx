@@ -32,10 +32,10 @@ export const Header: React.FC = () => {
             <nav className="hidden md:flex space-x-1">
               <Link
                 to="/marketplace"
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border ${
                   isActive('/marketplace')
-                    ? 'text-cyan-300 bg-cyan-500/20 border border-cyan-500/50 neon-border'
-                    : 'text-slate-300 hover:text-cyan-300 hover:bg-slate-800/50 border border-transparent hover:border-slate-600'
+                    ? 'text-cyan-300 bg-cyan-500/20 border-cyan-500/50 neon-border'
+                    : 'text-slate-300 hover:text-cyan-300 hover:bg-slate-800/50 border-slate-600 hover:border-slate-500'
                 }`}
               >
                 <Activity className="h-4 w-4 inline mr-2" />
@@ -43,10 +43,10 @@ export const Header: React.FC = () => {
               </Link>
               <Link
                 to="/dashboard"
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border ${
                   isActive('/dashboard')
-                    ? 'text-purple-300 bg-purple-500/20 border border-purple-500/50 neon-border'
-                    : 'text-slate-300 hover:text-purple-300 hover:bg-slate-800/50 border border-transparent hover:border-slate-600'
+                    ? 'text-purple-300 bg-purple-500/20 border-purple-500/50 neon-border'
+                    : 'text-slate-300 hover:text-purple-300 hover:bg-slate-800/50 border-slate-600 hover:border-slate-500'
                 }`}
               >
                 <Zap className="h-4 w-4 inline mr-2" />
@@ -55,10 +55,10 @@ export const Header: React.FC = () => {
               {user.role === 'creator' && (
                 <Link
                   to="/create-project"
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border ${
                     isActive('/create-project')
-                      ? 'text-pink-300 bg-pink-500/20 border border-pink-500/50 neon-border'
-                      : 'text-slate-300 hover:text-pink-300 hover:bg-slate-800/50 border border-transparent hover:border-slate-600'
+                      ? 'text-pink-300 bg-pink-500/20 border-pink-500/50 neon-border'
+                      : 'text-slate-300 hover:text-pink-300 hover:bg-slate-800/50 border-slate-600 hover:border-slate-500'
                   }`}
                 >
                   Deploy Mission
@@ -129,13 +129,13 @@ export const Header: React.FC = () => {
               <div className="flex space-x-3">
                 <Link
                   to="/login"
-                  className="text-slate-300 hover:text-cyan-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors terminal-font uppercase tracking-wide border border-transparent hover:border-slate-600"
+                  className="text-slate-300 hover:text-cyan-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors terminal-font uppercase tracking-wide border border-slate-600 hover:border-slate-500"
                 >
                   Connect
                 </Link>
                 <Link
                   to="/register"
-                  className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide cyber-button"
+                  className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide cyber-button border border-purple-500/50"
                 >
                   Join Swarm
                 </Link>
