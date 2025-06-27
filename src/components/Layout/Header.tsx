@@ -55,8 +55,8 @@ export const Header: React.FC = () => {
             </nav>
           )}
 
-          {/* Right Side - Fixed width and consistent spacing */}
-          <div className="w-[400px] flex items-center justify-end space-x-4 flex-shrink-0">
+          {/* Right Side - Fixed width and consistent spacing with added margin for separation */}
+          <div className="w-[400px] flex items-center justify-end space-x-4 flex-shrink-0 ml-8">
             {user ? (
               <>
                 {/* Treasury and Wallet Widgets - Consistent sizing */}
