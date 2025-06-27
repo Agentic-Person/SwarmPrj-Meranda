@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { WalletWidget } from '../Wallet/WalletWidget';
+import { TreasuryWidget } from '../Treasury/TreasuryWidget';
 import { Code2, User, LogOut, Settings, Star, Zap, Activity } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -70,6 +71,9 @@ export const Header: React.FC = () => {
           <div className="flex items-center space-x-4">
             {user ? (
               <div className="flex items-center space-x-4">
+                {/* Treasury Widget */}
+                <TreasuryWidget />
+
                 {/* Wallet Widget */}
                 <WalletWidget />
 
