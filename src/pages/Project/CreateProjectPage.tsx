@@ -7,7 +7,7 @@ import { Select } from '../../components/UI/Select';
 import { Textarea } from '../../components/UI/Textarea';
 import { Platform, Project } from '../../types';
 import { addMockProject } from '../../utils/mockData';
-import { Zap, Target, Brain, CheckCircle, AlertCircle, Star } from 'lucide-react';
+import { Zap, Target, Brain, CheckCircle, AlertCircle, Star, PiggyBank } from 'lucide-react';
 
 const platformOptions = [
   { value: 'bolt.new', label: 'Bolt.new' },
@@ -245,6 +245,12 @@ export const CreateProjectPage: React.FC = () => {
                     <p className="text-sm text-slate-400">
                       <span className="text-yellow-400 font-semibold">100 SWARM Tokens</span> required to deploy this mission
                     </p>
+                    <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3 mt-2">
+                      <div className="flex items-center space-x-2 text-sm text-green-300">
+                        <PiggyBank className="h-4 w-4" />
+                        <span>These tokens will be deposited into the SWARM Treasury, which you can invest in above.</span>
+                      </div>
+                    </div>
                   </div>
                   
                   <Input
@@ -324,6 +330,15 @@ export const CreateProjectPage: React.FC = () => {
               <p>• Funds swarm intelligence processing and coordination</p>
               <p>• Supports platform development and maintenance</p>
               <p>• Enables premium agent matching algorithms</p>
+              <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3 mt-3">
+                <div className="flex items-center space-x-2 text-sm text-green-300">
+                  <PiggyBank className="h-4 w-4" />
+                  <span className="font-semibold">Treasury Deposit:</span>
+                </div>
+                <p className="text-green-200 text-xs mt-1">
+                  These tokens are deposited into the SWARM Treasury for ecosystem growth and can be invested in via the Treasury widget above.
+                </p>
+              </div>
             </div>
           </div>
           
