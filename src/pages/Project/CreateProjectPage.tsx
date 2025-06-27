@@ -7,7 +7,7 @@ import { Select } from '../../components/UI/Select';
 import { Textarea } from '../../components/UI/Textarea';
 import { Platform, Project } from '../../types';
 import { addMockProject } from '../../utils/mockData';
-import { Zap, Target, Brain, CheckCircle, AlertCircle } from 'lucide-react';
+import { Zap, Target, Brain, CheckCircle, AlertCircle, Star } from 'lucide-react';
 
 const platformOptions = [
   { value: 'bolt.new', label: 'Bolt.new' },
@@ -32,6 +32,7 @@ export const CreateProjectPage: React.FC = () => {
     platform: 'bolt.new' as Platform,
     appLink: '',
     budget: '',
+    swarmTokenReward: '',
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -54,6 +55,7 @@ export const CreateProjectPage: React.FC = () => {
       platform: formData.platform,
       appLink: formData.appLink,
       budget: formData.budget ? parseInt(formData.budget) : undefined,
+      swarmTokenReward: formData.swarmTokenReward ? parseInt(formData.swarmTokenReward) : undefined,
       status: 'open',
       creatorId: user!.id,
       createdAt: new Date(),
@@ -74,6 +76,7 @@ export const CreateProjectPage: React.FC = () => {
       platform: 'bolt.new',
       appLink: '',
       budget: '',
+      swarmTokenReward: '',
     });
     
     setIsSubmitting(false);
@@ -167,14 +170,25 @@ export const CreateProjectPage: React.FC = () => {
                   required
                 />
                 
-                <Input
-                  label="Budget Allocation (Optional)"
-                  type="number"
-                  value={formData.budget}
-                  onChange={(e) => handleInputChange('budget', e.target.value)}
-                  placeholder="0"
-                  helper="Budget in USD for mission completion"
-                />
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Input
+                    label="Budget Allocation (Optional)"
+                    type="number"
+                    value={formData.budget}
+                    onChange={(e) => handleInputChange('budget', e.target.value)}
+                    placeholder="0"
+                    helper="Budget in USD for mission completion"
+                  />
+                  
+                  <Input
+                    label="SWARM Token Reward (Optional)"
+                    type="number"
+                    value={formData.swarmTokenReward}
+                    onChange={(e) => handleInputChange('swarmTokenReward', e.target.value)}
+                    placeholder="0"
+                    helper="SWARM Tokens awarded upon mission completion"
+                  />
+                </div>
               </div>
             </div>
             
@@ -224,6 +238,19 @@ export const CreateProjectPage: React.FC = () => {
                 </div>
                 <p>Real-time collaboration and validation</p>
               </div>
+            </div>
+          </div>
+          
+          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-6 mb-6">
+            <h3 className="font-semibold text-yellow-300 mb-3 flex items-center">
+              <Star className="h-5 w-5 mr-2" />
+              SWARM Token Economy
+            </h3>
+            <div className="space-y-2 text-sm text-yellow-200">
+              <p>• Reward agents with SWARM tokens for mission completion</p>
+              <p>• Higher rewards attract more skilled agents</p>
+              <p>• Tokens can be used for premium features and governance</p>
+              <p>• Build reputation through consistent quality delivery</p>
             </div>
           </div>
           

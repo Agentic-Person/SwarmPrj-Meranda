@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { mockProjects, mockUsers, mockMessages, refreshMockData } from '../../utils/mockData';
+import { mockProjects, mockUsers, mockMessages, refreshMockData, distributeSwarmTokens } from '../../utils/mockData';
 import { Button } from '../../components/UI/Button';
 import { Textarea } from '../../components/UI/Textarea';
 import { 
@@ -14,7 +14,8 @@ import {
   Clock,
   ExternalLink,
   Star,
-  Target
+  Target,
+  Zap
 } from 'lucide-react';
 
 export const ProjectDetailPage: React.FC = () => {
@@ -97,7 +98,21 @@ export const ProjectDetailPage: React.FC = () => {
   };
 
   const handleCompleteProject = () => {
-    alert('Mission marked as complete! This would notify the creator for review.');
+    if (project && user) {
+      // Distribute SWARM tokens
+      const success = distributeSwarmTokens(project.id, user.id);
+      
+      if (success && project.swarmTokenReward) {
+        alert(`Mission completed! You earned ${project.swarmTokenReward} SWARM tokens! 🎉`);
+      } else {
+        alert('Mission marked as complete!');
+      }
+      
+      // Refresh the project data to show updated status
+      refreshMockData();
+      const updatedProject = mockProjects.find(p => p.id === id);
+      setProject(updatedProject);
+    }
   };
 
   return (
@@ -123,6 +138,12 @@ export const ProjectDetailPage: React.FC = () => {
                     <div className="flex items-center space-x-1">
                       <DollarSign className="h-4 w-4" />
                       <span>${project.budget}</span>
+                    </div>
+                  )}
+                  {project.swarmTokenReward && (
+                    <div className="flex items-center space-x-1">
+                      <Star className="h-4 w-4 text-yellow-400" />
+                      <span>{project.swarmTokenReward} SWARM</span>
                     </div>
                   )}
                 </div>
@@ -289,6 +310,24 @@ export const ProjectDetailPage: React.FC = () => {
             )}
           </div>
 
+          {/* Reward Info */}
+          {project.swarmTokenReward && (
+            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-6">
+              <h3 className="font-semibold text-yellow-300 mb-4 flex items-center">
+                <Star className="h-5 w-5 mr-2" />
+                SWARM Token Reward
+              </h3>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-yellow-400 mb-2">
+                  {project.swarmTokenReward}
+                </div>
+                <div className="text-yellow-200 text-sm">
+                  SWARM Tokens awarded upon completion
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Creator Info */}
           <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-600 rounded-xl p-6 cyber-card">
             <h3 className="font-semibold text-white mb-4">Mission Creator</h3>
@@ -313,6 +352,12 @@ export const ProjectDetailPage: React.FC = () => {
             <div className="text-sm text-slate-400">
               <div>Missions completed: {creator.completedProjects}</div>
               <div>Member since: {new Date(creator.createdAt).toLocaleDateString()}</div>
+              {creator.swarmTokens && (
+                <div className="flex items-center space-x-1 text-yellow-400">
+                  <Star className="h-3 w-3" />
+                  <span>{creator.swarmTokens} SWARM Tokens</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -353,6 +398,12 @@ export const ProjectDetailPage: React.FC = () => {
               
               <div className="text-sm text-slate-400">
                 <div>Missions completed: {finisher.completedProjects}</div>
+                {finisher.swarmTokens && (
+                  <div className="flex items-center space-x-1 text-yellow-400">
+                    <Star className="h-3 w-3" />
+                    <span>{finisher.swarmTokens} SWARM Tokens</span>
+                  </div>
+                )}
               </div>
             </div>
           )}

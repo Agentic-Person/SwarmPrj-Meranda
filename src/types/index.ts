@@ -15,6 +15,8 @@ export interface User {
   primaryRole?: 'builder' | 'validator' | 'approver';
   personalityArchetype?: PersonalityArchetype;
   onboardingCompleted?: boolean;
+  // SWARM Token balance
+  swarmTokens?: number;
 }
 
 export interface PersonalityArchetype {
@@ -53,6 +55,7 @@ export interface Project {
   platform: Platform;
   appLink: string;
   budget?: number;
+  swarmTokenReward?: number;
   status: ProjectStatus;
   creatorId: string;
   finisherId?: string;

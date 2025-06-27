@@ -75,6 +75,7 @@ const getDefaultUsers = (): User[] => [
     agentName: 'CodeMaster Alex',
     primaryRole: 'builder',
     onboardingCompleted: true,
+    swarmTokens: 2500,
   },
   {
     id: 'user-2',
@@ -90,6 +91,7 @@ const getDefaultUsers = (): User[] => [
     agentName: 'UI Wizard Sarah',
     primaryRole: 'validator',
     onboardingCompleted: true,
+    swarmTokens: 3200,
   },
   {
     id: 'user-3',
@@ -105,6 +107,7 @@ const getDefaultUsers = (): User[] => [
     agentName: 'Backend Beast Marcus',
     primaryRole: 'approver',
     onboardingCompleted: true,
+    swarmTokens: 1800,
   },
 ];
 
@@ -117,6 +120,7 @@ const getDefaultProjects = (): Project[] => [
     platform: 'bolt.new',
     appLink: 'https://demo-ecommerce.example.com',
     budget: 2500,
+    swarmTokenReward: 150,
     status: 'in-progress',
     creatorId: 'user-1',
     finisherId: 'user-2',
@@ -145,6 +149,7 @@ const getDefaultProjects = (): Project[] => [
     platform: 'flutterflow',
     appLink: 'https://github.com/example/mobile-auth',
     budget: 1800,
+    swarmTokenReward: 120,
     status: 'open',
     creatorId: 'user-1',
     createdAt: new Date('2024-01-08'),
@@ -157,6 +162,37 @@ export let mockUsers: User[] = loadFromStorage(STORAGE_KEYS.USERS, getDefaultUse
 export let mockProjects: Project[] = loadFromStorage(STORAGE_KEYS.PROJECTS, getDefaultProjects());
 export let mockReviews: Review[] = loadFromStorage(STORAGE_KEYS.REVIEWS, []);
 export let mockMessages: Message[] = loadFromStorage(STORAGE_KEYS.MESSAGES, []);
+
+// Function to distribute SWARM tokens when a project is completed
+export const distributeSwarmTokens = (projectId: string, finisherId: string): boolean => {
+  const projectIndex = mockProjects.findIndex(p => p.id === projectId);
+  const finisherIndex = mockUsers.findIndex(u => u.id === finisherId);
+  
+  if (projectIndex === -1 || finisherIndex === -1) {
+    return false;
+  }
+  
+  const project = mockProjects[projectIndex];
+  const finisher = mockUsers[finisherIndex];
+  
+  // Award SWARM tokens if the project has a reward
+  if (project.swarmTokenReward) {
+    finisher.swarmTokens = (finisher.swarmTokens || 0) + project.swarmTokenReward;
+  }
+  
+  // Update project status
+  project.status = 'completed';
+  project.updatedAt = new Date();
+  
+  // Update finisher's completed projects count
+  finisher.completedProjects += 1;
+  
+  // Save to localStorage
+  saveToStorage(STORAGE_KEYS.PROJECTS, mockProjects);
+  saveToStorage(STORAGE_KEYS.USERS, mockUsers);
+  
+  return true;
+};
 
 // Functions to add new data and persist to localStorage
 export const addMockProject = (project: Project): void => {

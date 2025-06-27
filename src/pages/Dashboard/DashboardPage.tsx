@@ -4,7 +4,7 @@ import { mockProjects, mockUsers, refreshMockData } from '../../utils/mockData';
 import { ProjectCard } from '../../components/Project/ProjectCard';
 import { Button } from '../../components/UI/Button';
 import { Link } from 'react-router-dom';
-import { Plus, Clock, CheckCircle, DollarSign, Zap, Activity, Target } from 'lucide-react';
+import { Plus, Clock, CheckCircle, DollarSign, Zap, Activity, Target, Star } from 'lucide-react';
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth();
@@ -28,6 +28,13 @@ export const DashboardPage: React.FC = () => {
 
   const stats = [
     {
+      label: 'SWARM Tokens',
+      value: user?.swarmTokens || 0,
+      icon: Star,
+      color: 'text-yellow-400 bg-yellow-500/20',
+      border: 'border-yellow-500/30',
+    },
+    {
       label: 'Active Missions',
       value: activeProjects.length,
       icon: Activity,
@@ -38,8 +45,8 @@ export const DashboardPage: React.FC = () => {
       label: 'In Progress',
       value: userProjects.filter(p => p.status === 'in-progress').length,
       icon: Clock,
-      color: 'text-yellow-400 bg-yellow-500/20',
-      border: 'border-yellow-500/30',
+      color: 'text-blue-400 bg-blue-500/20',
+      border: 'border-blue-500/30',
     },
     {
       label: 'Completed',
@@ -47,13 +54,6 @@ export const DashboardPage: React.FC = () => {
       icon: CheckCircle,
       color: 'text-green-400 bg-green-500/20',
       border: 'border-green-500/30',
-    },
-    {
-      label: 'Total Earned',
-      value: `$${completedProjects.reduce((sum, p) => sum + (p.budget || 0), 0)}`,
-      icon: DollarSign,
-      color: 'text-purple-400 bg-purple-500/20',
-      border: 'border-purple-500/30',
     },
   ];
 
