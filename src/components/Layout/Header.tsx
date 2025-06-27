@@ -71,23 +71,11 @@ export const Header: React.FC = () => {
           <div className="flex items-center space-x-4">
             {user ? (
               <div className="flex items-center space-x-4">
-                {/* Treasury Widget */}
+                {/* Treasury Widget - replaces the ONLINE status */}
                 <TreasuryWidget />
 
                 {/* Wallet Widget */}
                 <WalletWidget />
-
-                {/* Agent Status */}
-                <div className="hidden lg:flex items-center space-x-3 px-3 py-1 bg-slate-800/50 rounded-lg border border-slate-600">
-                  <div className="flex items-center space-x-2 text-sm">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                    <span className="text-green-400 terminal-font text-xs uppercase tracking-wider">ONLINE</span>
-                  </div>
-                  <div className="flex items-center space-x-1 text-sm text-yellow-400">
-                    <Star className="h-3 w-3 fill-current" />
-                    <span className="terminal-font">{user.rating.toFixed(1)}</span>
-                  </div>
-                </div>
 
                 {/* User Dropdown */}
                 <div className="relative group">
