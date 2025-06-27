@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { WalletWidget } from '../Wallet/WalletWidget';
 import { Code2, User, LogOut, Settings, Star, Zap, Activity } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -69,8 +70,11 @@ export const Header: React.FC = () => {
           <div className="flex items-center space-x-4">
             {user ? (
               <div className="flex items-center space-x-4">
+                {/* Wallet Widget */}
+                <WalletWidget />
+
                 {/* Agent Status */}
-                <div className="hidden sm:flex items-center space-x-3 px-3 py-1 bg-slate-800/50 rounded-lg border border-slate-600">
+                <div className="hidden lg:flex items-center space-x-3 px-3 py-1 bg-slate-800/50 rounded-lg border border-slate-600">
                   <div className="flex items-center space-x-2 text-sm">
                     <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                     <span className="text-green-400 terminal-font text-xs uppercase tracking-wider">ONLINE</span>

@@ -17,6 +17,34 @@ export interface User {
   onboardingCompleted?: boolean;
   // SWARM Token balance
   swarmTokens?: number;
+  // Web3 Wallet
+  wallet?: WalletData;
+}
+
+export interface WalletData {
+  address: string;
+  isConnected: boolean;
+  network: 'ethereum' | 'polygon' | 'arbitrum' | 'optimism';
+  tokens: TokenBalance[];
+  nfts?: NFTData[];
+}
+
+export interface TokenBalance {
+  symbol: string;
+  name: string;
+  balance: number;
+  decimals: number;
+  usdValue: number;
+  contractAddress?: string;
+  logo?: string;
+}
+
+export interface NFTData {
+  id: string;
+  name: string;
+  collection: string;
+  image: string;
+  rarity?: string;
 }
 
 export interface PersonalityArchetype {

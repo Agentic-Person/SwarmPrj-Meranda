@@ -1,4 +1,4 @@
-import { User, Project, Review, Message } from '../types';
+import { User, Project, Review, Message, WalletData } from '../types';
 
 // Helper functions for localStorage persistence
 const STORAGE_KEYS = {
@@ -60,6 +60,70 @@ const saveToStorage = <T>(key: string, data: T): void => {
   }
 };
 
+// Mock wallet data generator
+const generateMockWallet = (userId: string, swarmTokens: number = 0): WalletData => {
+  const addresses = {
+    'user-1': '0x742d35Cc6634C0532925a3b8D4C2C4e4C4C4C4C4',
+    'user-2': '0x8ba1f109551bD432803012645Hac189451c4c4c4',
+    'user-3': '0x1234567890abcdef1234567890abcdef12345678',
+  };
+
+  const baseTokens = [
+    {
+      symbol: 'ETH',
+      name: 'Ethereum',
+      balance: Math.random() * 5 + 0.1,
+      decimals: 18,
+      usdValue: 0,
+      contractAddress: '0x0000000000000000000000000000000000000000',
+    },
+    {
+      symbol: 'USDC',
+      name: 'USD Coin',
+      balance: Math.random() * 1000 + 100,
+      decimals: 6,
+      usdValue: 0,
+      contractAddress: '0xA0b86a33E6441c8C4C4C4C4C4C4C4C4C4C4C4C4C',
+    },
+    {
+      symbol: 'SWARM',
+      name: 'SWARM Token',
+      balance: swarmTokens,
+      decimals: 18,
+      usdValue: 0,
+      contractAddress: '0xSWARM1234567890abcdef1234567890abcdef12',
+    },
+  ];
+
+  // Calculate USD values
+  baseTokens[0].usdValue = baseTokens[0].balance * 2400; // ETH price
+  baseTokens[1].usdValue = baseTokens[1].balance * 1; // USDC price
+  baseTokens[2].usdValue = baseTokens[2].balance * 0.85; // SWARM token price
+
+  return {
+    address: addresses[userId as keyof typeof addresses] || addresses['user-1'],
+    isConnected: true,
+    network: 'ethereum',
+    tokens: baseTokens,
+    nfts: [
+      {
+        id: 'nft-1',
+        name: 'AI Agent #1337',
+        collection: 'Swarm Agents',
+        image: 'https://images.pexels.com/photos/8566473/pexels-photo-8566473.jpeg?auto=compress&cs=tinysrgb&w=400',
+        rarity: 'Rare',
+      },
+      {
+        id: 'nft-2',
+        name: 'Neural Network #42',
+        collection: 'Digital Minds',
+        image: 'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=400',
+        rarity: 'Epic',
+      },
+    ],
+  };
+};
+
 // Initialize with some default demo data if localStorage is empty
 const getDefaultUsers = (): User[] => [
   {
@@ -76,6 +140,7 @@ const getDefaultUsers = (): User[] => [
     primaryRole: 'builder',
     onboardingCompleted: true,
     swarmTokens: 2500,
+    wallet: generateMockWallet('user-1', 2500),
   },
   {
     id: 'user-2',
@@ -92,6 +157,7 @@ const getDefaultUsers = (): User[] => [
     primaryRole: 'validator',
     onboardingCompleted: true,
     swarmTokens: 3200,
+    wallet: generateMockWallet('user-2', 3200),
   },
   {
     id: 'user-3',
@@ -108,6 +174,7 @@ const getDefaultUsers = (): User[] => [
     primaryRole: 'approver',
     onboardingCompleted: true,
     swarmTokens: 1800,
+    wallet: generateMockWallet('user-3', 1800),
   },
 ];
 
@@ -178,6 +245,15 @@ export const distributeSwarmTokens = (projectId: string, finisherId: string): bo
   // Award SWARM tokens if the project has a reward
   if (project.swarmTokenReward) {
     finisher.swarmTokens = (finisher.swarmTokens || 0) + project.swarmTokenReward;
+    
+    // Update wallet SWARM token balance if wallet exists
+    if (finisher.wallet) {
+      const swarmToken = finisher.wallet.tokens.find(t => t.symbol === 'SWARM');
+      if (swarmToken) {
+        swarmToken.balance = finisher.swarmTokens;
+        swarmToken.usdValue = swarmToken.balance * 0.85; // Update USD value
+      }
+    }
   }
   
   // Update project status
