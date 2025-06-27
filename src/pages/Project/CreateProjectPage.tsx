@@ -279,20 +279,7 @@ export const CreateProjectPage: React.FC = () => {
                         />
                         <div className="flex justify-between text-xs text-slate-400 mt-1">
                           <span>0</span>
-                          <span>500</span>
                           <span>1000</span>
-                        </div>
-                      </div>
-                      
-                      {/* Value Display */}
-                      <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3">
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-purple-300 mb-1">
-                            {rewardValue} SWARM
-                          </div>
-                          <div className="text-xs text-purple-200">
-                            Reward for mission completion
-                          </div>
                         </div>
                       </div>
                       
@@ -368,7 +355,7 @@ export const CreateProjectPage: React.FC = () => {
             </div>
           </div>
           
-          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-6 mb-6">
+          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-6">
             <h3 className="font-semibold text-yellow-300 mb-3 flex items-center">
               <Star className="h-5 w-5 mr-2" />
               Mission Deployment Cost
@@ -394,16 +381,6 @@ export const CreateProjectPage: React.FC = () => {
                 </p>
               </div>
             </div>
-          </div>
-          
-          <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-6">
-            <h3 className="font-semibold text-cyan-300 mb-3">💡 Optimization Tips</h3>
-            <ul className="space-y-2 text-sm text-cyan-200">
-              <li>• Provide detailed technical specifications</li>
-              <li>• Include relevant documentation or examples</li>
-              <li>• Specify performance and security requirements</li>
-              <li>• Set realistic timelines and token expectations</li>
-            </ul>
           </div>
         </div>
       </div>
