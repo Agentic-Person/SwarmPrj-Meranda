@@ -7,7 +7,7 @@ import { Select } from '../../components/UI/Select';
 import { Textarea } from '../../components/UI/Textarea';
 import { Platform, Project } from '../../types';
 import { addMockProject } from '../../utils/mockData';
-import { Zap, Target, Brain, CheckCircle, AlertCircle, Star, PiggyBank } from 'lucide-react';
+import { Zap, Target, Brain, CheckCircle, AlertCircle, Star, PiggyBank, User } from 'lucide-react';
 
 const platformOptions = [
   { value: 'bolt.new', label: 'Bolt.new' },
@@ -32,11 +32,15 @@ export const CreateProjectPage: React.FC = () => {
     platform: 'bolt.new' as Platform,
     appLink: '',
     missionCost: '100', // Set to mandatory 100 SWARM tokens
-    swarmTokenReward: '',
+    swarmTokenReward: '100', // Default to 100 tokens
   });
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSliderChange = (value: number) => {
+    setFormData(prev => ({ ...prev, swarmTokenReward: value.toString() }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -64,7 +68,7 @@ export const CreateProjectPage: React.FC = () => {
       platform: formData.platform,
       appLink: formData.appLink,
       budget: missionCost,
-      swarmTokenReward: formData.swarmTokenReward ? parseInt(formData.swarmTokenReward) : undefined,
+      swarmTokenReward: parseInt(formData.swarmTokenReward),
       status: 'open',
       creatorId: user!.id,
       createdAt: new Date(),
@@ -104,7 +108,7 @@ export const CreateProjectPage: React.FC = () => {
       platform: 'bolt.new',
       appLink: '',
       missionCost: '100',
-      swarmTokenReward: '',
+      swarmTokenReward: '100',
     });
     
     setIsSubmitting(false);
@@ -128,6 +132,7 @@ export const CreateProjectPage: React.FC = () => {
   const currentSwarmBalance = user?.swarmTokens ?? 1000;
   const missionCost = 100;
   const hasInsufficientFunds = currentSwarmBalance < missionCost;
+  const rewardValue = parseInt(formData.swarmTokenReward) || 0;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
@@ -253,14 +258,63 @@ export const CreateProjectPage: React.FC = () => {
                     </div>
                   </div>
                   
-                  <Input
-                    label="SWARM Token Reward (Optional)"
-                    type="number"
-                    value={formData.swarmTokenReward}
-                    onChange={(e) => handleInputChange('swarmTokenReward', e.target.value)}
-                    placeholder="0"
-                    helper="SWARM Tokens awarded upon mission completion"
-                  />
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-slate-300 uppercase tracking-wider">
+                      SWARM Token Reward (Required)
+                    </label>
+                    <div className="space-y-3">
+                      {/* Slider */}
+                      <div className="relative">
+                        <input
+                          type="range"
+                          min="0"
+                          max="1000"
+                          step="10"
+                          value={rewardValue}
+                          onChange={(e) => handleSliderChange(parseInt(e.target.value))}
+                          className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer slider"
+                          style={{
+                            background: `linear-gradient(to right, #8B5CF6 0%, #8B5CF6 ${(rewardValue / 1000) * 100}%, #374151 ${(rewardValue / 1000) * 100}%, #374151 100%)`
+                          }}
+                        />
+                        <div className="flex justify-between text-xs text-slate-400 mt-1">
+                          <span>0</span>
+                          <span>500</span>
+                          <span>1000</span>
+                        </div>
+                      </div>
+                      
+                      {/* Value Display */}
+                      <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3">
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-purple-300 mb-1">
+                            {rewardValue} SWARM
+                          </div>
+                          <div className="text-xs text-purple-200">
+                            Reward for mission completion
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Input field for precise control */}
+                      <input
+                        type="number"
+                        min="0"
+                        max="1000"
+                        value={formData.swarmTokenReward}
+                        onChange={(e) => handleInputChange('swarmTokenReward', e.target.value)}
+                        className="block w-full rounded-lg bg-slate-800/50 border border-slate-600 text-white placeholder-slate-400 focus:border-purple-500 focus:ring-purple-500 focus:ring-1 transition-all duration-300 backdrop-blur-sm"
+                        placeholder="Enter exact amount"
+                        required
+                      />
+                    </div>
+                    <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3 mt-2">
+                      <div className="flex items-center space-x-2 text-sm text-blue-300">
+                        <User className="h-4 w-4" />
+                        <span>SWARM Token Reward is paid directly to the builder of your app.</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -278,7 +332,7 @@ export const CreateProjectPage: React.FC = () => {
                 type="submit"
                 loading={isSubmitting}
                 variant="cyber"
-                disabled={showSuccess || hasInsufficientFunds}
+                disabled={showSuccess || hasInsufficientFunds || !formData.swarmTokenReward || parseInt(formData.swarmTokenReward) <= 0}
               >
                 {isSubmitting ? 'Deploying Mission...' : 'Deploy Mission (100 SWARM)'}
               </Button>
@@ -353,6 +407,29 @@ export const CreateProjectPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        .slider::-webkit-slider-thumb {
+          appearance: none;
+          height: 20px;
+          width: 20px;
+          border-radius: 50%;
+          background: #8B5CF6;
+          cursor: pointer;
+          border: 2px solid #ffffff;
+          box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
+        }
+        
+        .slider::-moz-range-thumb {
+          height: 20px;
+          width: 20px;
+          border-radius: 50%;
+          background: #8B5CF6;
+          cursor: pointer;
+          border: 2px solid #ffffff;
+          box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
+        }
+      `}</style>
     </div>
   );
 };
