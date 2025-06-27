@@ -61,7 +61,7 @@ const saveToStorage = <T>(key: string, data: T): void => {
 };
 
 // Mock wallet data generator
-const generateMockWallet = (userId: string, swarmTokens: number = 0): WalletData => {
+const generateMockWallet = (userId: string, swarmTokens: number = 1000): WalletData => {
   const addresses = {
     'user-1': '0x742d35Cc6634C0532925a3b8D4C2C4e4C4C4C4C4',
     'user-2': '0x8ba1f109551bD432803012645Hac189451c4c4c4',
@@ -139,8 +139,8 @@ const getDefaultUsers = (): User[] => [
     agentName: 'CodeMaster Alex',
     primaryRole: 'builder',
     onboardingCompleted: true,
-    swarmTokens: 2500,
-    wallet: generateMockWallet('user-1', 2500),
+    swarmTokens: 1000, // Updated to match wallet
+    wallet: generateMockWallet('user-1', 1000),
   },
   {
     id: 'user-2',
@@ -325,6 +325,26 @@ export const distributeSwarmTokens = (projectId: string, finisherId: string): bo
   saveToStorage(STORAGE_KEYS.USERS, mockUsers);
   
   return true;
+};
+
+// Function to update user SWARM tokens and sync with wallet
+export const updateUserSwarmTokens = (userId: string, newBalance: number): void => {
+  const userIndex = mockUsers.findIndex(u => u.id === userId);
+  if (userIndex !== -1) {
+    mockUsers[userIndex].swarmTokens = newBalance;
+    
+    // Update wallet SWARM token balance if wallet exists
+    if (mockUsers[userIndex].wallet) {
+      const swarmToken = mockUsers[userIndex].wallet!.tokens.find(t => t.symbol === 'SWARM');
+      if (swarmToken) {
+        swarmToken.balance = newBalance;
+        swarmToken.usdValue = newBalance * 0.85;
+      }
+    }
+    
+    // Save to localStorage
+    saveToStorage(STORAGE_KEYS.USERS, mockUsers);
+  }
 };
 
 // Functions to add new data and persist to localStorage

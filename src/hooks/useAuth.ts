@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import { User } from '../types';
-import { mockUsers } from '../utils/mockData';
+import { mockUsers, updateUserSwarmTokens } from '../utils/mockData';
 
 interface AuthContextType {
   user: User | null;
@@ -29,7 +29,17 @@ export const useAuthProvider = () => {
     // Check for stored user session
     const storedUser = localStorage.getItem('app-finisher-user');
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const parsedUser = JSON.parse(storedUser);
+      
+      // Ensure SWARM tokens are consistent with wallet
+      if (parsedUser.wallet) {
+        const swarmToken = parsedUser.wallet.tokens.find((t: any) => t.symbol === 'SWARM');
+        if (swarmToken && parsedUser.swarmTokens !== swarmToken.balance) {
+          parsedUser.swarmTokens = swarmToken.balance;
+        }
+      }
+      
+      setUser(parsedUser);
     }
     setIsLoading(false);
   }, []);
@@ -42,6 +52,14 @@ export const useAuthProvider = () => {
     
     const foundUser = mockUsers.find(u => u.email === email);
     if (foundUser) {
+      // Ensure SWARM tokens are consistent with wallet
+      if (foundUser.wallet) {
+        const swarmToken = foundUser.wallet.tokens.find(t => t.symbol === 'SWARM');
+        if (swarmToken && foundUser.swarmTokens !== swarmToken.balance) {
+          foundUser.swarmTokens = swarmToken.balance;
+        }
+      }
+      
       setUser(foundUser);
       localStorage.setItem('app-finisher-user', JSON.stringify(foundUser));
       setIsLoading(false);
@@ -70,6 +88,7 @@ export const useAuthProvider = () => {
       completedProjects: 0,
       createdAt: new Date(),
       onboardingCompleted: false,
+      swarmTokens: 1000, // Start new users with 1000 SWARM tokens
     };
     
     setUser(newUser);
@@ -79,8 +98,20 @@ export const useAuthProvider = () => {
   };
 
   const updateUser = (userData: User) => {
+    // Sync SWARM tokens with wallet if wallet exists
+    if (userData.wallet) {
+      const swarmToken = userData.wallet.tokens.find(t => t.symbol === 'SWARM');
+      if (swarmToken) {
+        swarmToken.balance = userData.swarmTokens || 0;
+        swarmToken.usdValue = (userData.swarmTokens || 0) * 0.85;
+      }
+    }
+    
     setUser(userData);
     localStorage.setItem('app-finisher-user', JSON.stringify(userData));
+    
+    // Update the mock data as well
+    updateUserSwarmTokens(userData.id, userData.swarmTokens || 0);
   };
 
   const logout = () => {
