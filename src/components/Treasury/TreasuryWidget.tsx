@@ -87,7 +87,7 @@ export const TreasuryWidget: React.FC = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="px-6 py-3 bg-green-600/20 hover:bg-green-600/30 text-green-300 hover:text-green-200 rounded-lg border border-green-500/50 hover:border-green-400/70 transition-all duration-300 terminal-font uppercase tracking-wide font-bold text-sm min-w-[140px] flex items-center justify-center space-x-2"
+        className="px-6 py-3 bg-green-600/20 hover:bg-green-600/30 text-green-300 hover:text-green-200 rounded-lg border border-green-500/50 hover:border-green-400/70 transition-all duration-300 terminal-font uppercase tracking-wide font-bold text-sm min-w-[160px] flex items-center justify-center space-x-2"
       >
         <PiggyBank className="h-4 w-4" />
         <span>INVEST $SWARM</span>

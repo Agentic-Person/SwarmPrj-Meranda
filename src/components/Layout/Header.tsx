@@ -14,7 +14,7 @@ export const Header: React.FC = () => {
   return (
     <header className="bg-slate-900/95 backdrop-blur-sm border-b border-purple-500/30 sticky top-0 z-50">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-24">
           {/* Logo Section */}
           <Link to="/" className="flex items-center space-x-4 group min-w-[280px]">
             <div className="relative">
@@ -27,12 +27,12 @@ export const Header: React.FC = () => {
             </div>
           </Link>
 
-          {/* Center Navigation */}
+          {/* Center Navigation - Action Buttons */}
           {user && (
             <nav className="hidden lg:flex items-center space-x-6">
               <Link
                 to="/marketplace"
-                className={`px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border min-w-[140px] flex items-center justify-center ${
+                className={`px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border min-w-[160px] flex items-center justify-center ${
                   isActive('/marketplace')
                     ? 'text-cyan-300 bg-cyan-500/20 border-cyan-500/50 neon-border'
                     : 'text-slate-300 hover:text-cyan-300 hover:bg-slate-800/50 border-slate-600 hover:border-slate-500'
@@ -42,7 +42,7 @@ export const Header: React.FC = () => {
               </Link>
               <Link
                 to="/dashboard"
-                className={`px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border min-w-[140px] flex items-center justify-center ${
+                className={`px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border min-w-[160px] flex items-center justify-center ${
                   isActive('/dashboard')
                     ? 'text-purple-300 bg-purple-500/20 border-purple-500/50 neon-border'
                     : 'text-slate-300 hover:text-purple-300 hover:bg-slate-800/50 border-slate-600 hover:border-slate-500'
@@ -53,7 +53,7 @@ export const Header: React.FC = () => {
               {user.role === 'creator' && (
                 <Link
                   to="/create-project"
-                  className={`px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border min-w-[140px] flex items-center justify-center ${
+                  className={`px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border min-w-[160px] flex items-center justify-center ${
                     isActive('/create-project')
                       ? 'text-pink-300 bg-pink-500/20 border-pink-500/50 neon-border'
                       : 'text-slate-300 hover:text-pink-300 hover:bg-slate-800/50 border-slate-600 hover:border-slate-500'
@@ -70,7 +70,7 @@ export const Header: React.FC = () => {
             {user ? (
               <>
                 {/* Treasury and Wallet Widgets - Blockchain Integration */}
-                <div className="hidden md:flex items-center space-x-4">
+                <div className="hidden md:flex items-center space-x-6">
                   <TreasuryWidget />
                   <WalletWidget />
                 </div>
