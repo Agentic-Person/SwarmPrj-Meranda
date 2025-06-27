@@ -99,10 +99,10 @@ export const WalletWidget: React.FC = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="px-6 py-3 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 hover:text-blue-200 rounded-lg border border-blue-500/50 hover:border-blue-400/70 transition-all duration-300 terminal-font uppercase tracking-wide font-medium text-sm min-w-[140px] flex items-center justify-center space-x-2"
+        className="px-6 py-3 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 hover:text-blue-200 rounded-lg border border-blue-500/50 hover:border-blue-400/70 transition-all duration-300 terminal-font uppercase tracking-wide font-bold text-sm min-w-[140px] flex items-center justify-center space-x-2"
       >
         <Wallet className="h-4 w-4" />
-        <div className="flex flex-col items-start">
+        <div className="flex flex-col items-center">
           <span>WALLET</span>
           <span className="text-xs">{swarmBalance} SWARM</span>
         </div>

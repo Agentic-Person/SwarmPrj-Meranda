@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { WalletWidget } from '../Wallet/WalletWidget';
 import { TreasuryWidget } from '../Treasury/TreasuryWidget';
-import { Code2, User, LogOut, Settings, Star, Zap, Activity } from 'lucide-react';
+import { Code2, User, LogOut, Settings } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const { user, logout } = useAuth();
@@ -38,24 +38,22 @@ export const Header: React.FC = () => {
                     : 'text-slate-300 hover:text-cyan-300 hover:bg-slate-800/50 border-slate-600 hover:border-slate-500'
                 }`}
               >
-                <Activity className="h-4 w-4 mr-2" />
                 MISSIONS
               </Link>
               <Link
                 to="/dashboard"
-                className={`px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border min-w-[160px] flex items-center justify-center ${
+                className={`px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border min-w-[140px] flex items-center justify-center ${
                   isActive('/dashboard')
                     ? 'text-purple-300 bg-purple-500/20 border-purple-500/50 neon-border'
                     : 'text-slate-300 hover:text-purple-300 hover:bg-slate-800/50 border-slate-600 hover:border-slate-500'
                 }`}
               >
-                <Zap className="h-4 w-4 mr-2" />
                 COMMAND CENTER
               </Link>
               {user.role === 'creator' && (
                 <Link
                   to="/create-project"
-                  className={`px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border min-w-[160px] flex items-center justify-center ${
+                  className={`px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border min-w-[140px] flex items-center justify-center ${
                     isActive('/create-project')
                       ? 'text-pink-300 bg-pink-500/20 border-pink-500/50 neon-border'
                       : 'text-slate-300 hover:text-pink-300 hover:bg-slate-800/50 border-slate-600 hover:border-slate-500'
@@ -71,26 +69,10 @@ export const Header: React.FC = () => {
           <div className="flex items-center space-x-6">
             {user ? (
               <>
-                {/* Treasury Widget - Green with proper dropdown */}
-                <div className="hidden md:block">
+                {/* Treasury and Wallet Widgets - Blockchain Integration */}
+                <div className="hidden md:flex items-center space-x-4">
                   <TreasuryWidget />
-                </div>
-
-                {/* Wallet Widget - Blue with proper dropdown */}
-                <div className="hidden md:block">
                   <WalletWidget />
-                </div>
-
-                {/* Agent Status */}
-                <div className="hidden lg:flex items-center space-x-3 px-3 py-1 bg-slate-800/50 rounded-lg border border-slate-600">
-                  <div className="flex items-center space-x-2 text-sm">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                    <span className="text-green-400 terminal-font text-xs uppercase tracking-wider">ONLINE</span>
-                  </div>
-                  <div className="flex items-center space-x-1 text-sm text-yellow-400">
-                    <Star className="h-3 w-3 fill-current" />
-                    <span className="terminal-font">{user.rating.toFixed(1)}</span>
-                  </div>
                 </div>
 
                 {/* User Profile */}
@@ -174,7 +156,6 @@ export const Header: React.FC = () => {
                     : 'text-slate-300 hover:text-cyan-300 hover:bg-slate-800/50 border-slate-600'
                 }`}
               >
-                <Activity className="h-3 w-3 mr-1" />
                 MISSIONS
               </Link>
               <Link
@@ -185,7 +166,6 @@ export const Header: React.FC = () => {
                     : 'text-slate-300 hover:text-purple-300 hover:bg-slate-800/50 border-slate-600'
                 }`}
               >
-                <Zap className="h-3 w-3 mr-1" />
                 COMMAND
               </Link>
               {user.role === 'creator' && (
