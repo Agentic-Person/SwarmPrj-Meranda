@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { WalletWidget } from '../Wallet/WalletWidget';
 import { TreasuryWidget } from '../Treasury/TreasuryWidget';
-import { Code2, User, LogOut, Settings } from 'lucide-react';
+import { Code2, User, LogOut, Settings, Star, Zap, Activity } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const { user, logout } = useAuth();
@@ -14,9 +14,10 @@ export const Header: React.FC = () => {
   return (
     <header className="bg-slate-900/95 backdrop-blur-sm border-b border-purple-500/30 sticky top-0 z-50">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-8">
-        <div className="flex justify-between items-center h-24">
-          {/* Logo Section - Fixed width */}
-          <div className="w-[300px] flex-shrink-0">
+        <div className="flex items-center h-20">
+          {/* Left Group: Logo and Navigation */}
+          <div className="flex items-center">
+            {/* Logo Section */}
             <Link to="/" className="flex items-center space-x-4 group">
               <div className="relative">
                 <Code2 className="h-10 w-10 text-purple-400 group-hover:text-cyan-400 transition-colors duration-300" />
@@ -27,71 +28,85 @@ export const Header: React.FC = () => {
                 <span className="text-xs text-purple-300 terminal-font tracking-wider">COLLABORATIVE INTELLIGENCE</span>
               </div>
             </Link>
-          </div>
 
-          {/* Center Navigation - Consistent button sizing */}
-          {user && (
-            <nav className="hidden lg:flex items-center space-x-4 flex-1 justify-center">
-              <Link
-                to="/marketplace"
-                className={`w-40 h-12 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border flex items-center justify-center ${
-                  isActive('/marketplace')
-                    ? 'text-cyan-300 bg-cyan-500/20 border-cyan-500/50 neon-border'
-                    : 'text-slate-300 hover:text-cyan-300 hover:bg-slate-800/50 border-slate-600 hover:border-slate-500'
-                }`}
-              >
-                MISSIONS
-              </Link>
-              <Link
-                to="/dashboard"
-                className={`w-40 h-12 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border flex items-center justify-center ${
-                  isActive('/dashboard')
-                    ? 'text-purple-300 bg-purple-500/20 border-purple-500/50 neon-border'
-                    : 'text-slate-300 hover:text-purple-300 hover:bg-slate-800/50 border-slate-600 hover:border-slate-500'
-                }`}
-              >
-                COMMAND CENTER
-              </Link>
-              {user.role === 'creator' && (
+            {/* Center Navigation */}
+            {user && (
+              <nav className="hidden lg:flex items-center space-x-6 ml-8">
                 <Link
-                  to="/create-project"
-                  className={`w-40 h-12 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border flex items-center justify-center ${
-                    isActive('/create-project')
-                      ? 'text-pink-300 bg-pink-500/20 border-pink-500/50 neon-border'
-                      : 'text-slate-300 hover:text-pink-300 hover:bg-slate-800/50 border-slate-600 hover:border-slate-500'
+                  to="/marketplace"
+                  className={`px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border min-w-[140px] flex items-center justify-center ${
+                    isActive('/marketplace')
+                      ? 'text-cyan-300 bg-cyan-500/20 border-cyan-500/50 neon-border'
+                      : 'text-slate-300 hover:text-cyan-300 hover:bg-slate-800/50 border-slate-600 hover:border-slate-500'
                   }`}
                 >
-                  DEPLOY MISSION
+                  <Activity className="h-4 w-4 mr-2" />
+                  MISSIONS
                 </Link>
-              )}
-            </nav>
-          )}
+                <Link
+                  to="/dashboard"
+                  className={`px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border min-w-[160px] flex items-center justify-center ${
+                    isActive('/dashboard')
+                      ? 'text-purple-300 bg-purple-500/20 border-purple-500/50 neon-border'
+                      : 'text-slate-300 hover:text-purple-300 hover:bg-slate-800/50 border-slate-600 hover:border-slate-500'
+                  }`}
+                >
+                  <Zap className="h-4 w-4 mr-2" />
+                  COMMAND CENTER
+                </Link>
+                {user.role === 'creator' && (
+                  <Link
+                    to="/create-project"
+                    className={`px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border min-w-[160px] flex items-center justify-center ${
+                      isActive('/create-project')
+                        ? 'text-pink-300 bg-pink-500/20 border-pink-500/50 neon-border'
+                        : 'text-slate-300 hover:text-pink-300 hover:bg-slate-800/50 border-slate-600 hover:border-slate-500'
+                    }`}
+                  >
+                    DEPLOY MISSION
+                  </Link>
+                )}
+              </nav>
+            )}
+          </div>
 
-          {/* Right Side - Fixed width and consistent spacing */}
-          <div className="w-[400px] flex items-center justify-end space-x-4 flex-shrink-0">
+          {/* Right Group: Treasury, Wallet, User Profile */}
+          <div className="flex items-center space-x-6 ml-auto">
             {user ? (
               <>
-                {/* Treasury and Wallet Widgets - Consistent sizing */}
-                <div className="hidden md:flex items-center space-x-3">
-                  <div className="h-12 flex items-center">
-                    <TreasuryWidget />
+                {/* Treasury Widget - Green with proper dropdown */}
+                <div className="hidden md:block">
+                  <TreasuryWidget />
+                </div>
+
+                {/* Wallet Widget - Blue with proper dropdown */}
+                <div className="hidden md:block">
+                  <WalletWidget />
+                </div>
+
+                {/* Agent Status */}
+                <div className="hidden lg:flex items-center space-x-3 px-3 py-1 bg-slate-800/50 rounded-lg border border-slate-600">
+                  <div className="flex items-center space-x-2 text-sm">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-green-400 terminal-font text-xs uppercase tracking-wider">ONLINE</span>
                   </div>
-                  <div className="h-12 flex items-center">
-                    <WalletWidget />
+                  <div className="flex items-center space-x-1 text-sm text-yellow-400">
+                    <Star className="h-3 w-3 fill-current" />
+                    <span className="terminal-font">{user.rating.toFixed(1)}</span>
                   </div>
                 </div>
 
-                {/* User Profile - Fixed width */}
+                {/* User Profile */}
                 <div className="relative group">
-                  <button className="w-48 h-12 flex items-center space-x-3 px-4 bg-slate-800/50 rounded-lg border border-slate-600 hover:border-purple-500/50 transition-all duration-300 group-hover:bg-slate-700/50">
-                    <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-full flex items-center justify-center flex-shrink-0">
+                  <button className="flex items-center space-x-3 px-6 py-3 bg-slate-800/50 rounded-lg border border-slate-600 hover:border-purple-500/50 transition-all duration-300 group-hover:bg-slate-700/50 min-w-[200px]">
+                    <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-full flex items-center justify-center">
                       <User className="h-4 w-4 text-white" />
                     </div>
-                    <div className="text-left flex-1 min-w-0">
+                    <div className="text-left flex-1">
                       <div className="text-sm font-medium text-white terminal-font truncate">
                         {user.agentName || user.name}
                       </div>
-                      <div className="text-xs text-purple-300 terminal-font uppercase tracking-wider truncate">
+                      <div className="text-xs text-purple-300 terminal-font uppercase tracking-wider">
                         {user.primaryRole || user.role} AGENT
                       </div>
                     </div>
@@ -132,16 +147,16 @@ export const Header: React.FC = () => {
                 </div>
               </>
             ) : (
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-6">
                 <Link
                   to="/login"
-                  className="w-28 h-12 px-4 py-3 text-slate-300 hover:text-cyan-300 rounded-lg text-sm font-medium transition-colors terminal-font uppercase tracking-wide border border-slate-600 hover:border-slate-500 flex items-center justify-center"
+                  className="px-6 py-3 text-slate-300 hover:text-cyan-300 rounded-lg text-sm font-medium transition-colors terminal-font uppercase tracking-wide border border-slate-600 hover:border-slate-500 min-w-[120px] flex items-center justify-center"
                 >
                   CONNECT
                 </Link>
                 <Link
                   to="/register"
-                  className="w-36 h-12 px-4 py-3 bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide cyber-button border border-purple-500/50 flex items-center justify-center"
+                  className="px-6 py-3 bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide cyber-button border border-purple-500/50 min-w-[140px] flex items-center justify-center"
                 >
                   JOIN SWARM
                 </Link>
@@ -162,6 +177,7 @@ export const Header: React.FC = () => {
                     : 'text-slate-300 hover:text-cyan-300 hover:bg-slate-800/50 border-slate-600'
                 }`}
               >
+                <Activity className="h-3 w-3 mr-1" />
                 MISSIONS
               </Link>
               <Link
@@ -172,6 +188,7 @@ export const Header: React.FC = () => {
                     : 'text-slate-300 hover:text-purple-300 hover:bg-slate-800/50 border-slate-600'
                 }`}
               >
+                <Zap className="h-3 w-3 mr-1" />
                 COMMAND
               </Link>
               {user.role === 'creator' && (
