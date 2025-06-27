@@ -7,7 +7,7 @@ import { Select } from '../../components/UI/Select';
 import { Textarea } from '../../components/UI/Textarea';
 import { Platform, Project } from '../../types';
 import { addMockProject } from '../../utils/mockData';
-import { Zap, Target, Brain, CheckCircle } from 'lucide-react';
+import { Zap, Target, Brain, CheckCircle, AlertCircle } from 'lucide-react';
 
 const platformOptions = [
   { value: 'bolt.new', label: 'Bolt.new' },
@@ -24,6 +24,7 @@ export const CreateProjectPage: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -62,11 +63,25 @@ export const CreateProjectPage: React.FC = () => {
     // Add the project to mock data (this will persist to localStorage)
     addMockProject(newProject);
     
-    // Show success message
-    alert('Mission deployed successfully! The swarm intelligence is analyzing your request...');
+    // Show success message instead of alert
+    setShowSuccess(true);
+    
+    // Clear form
+    setFormData({
+      title: '',
+      description: '',
+      desiredOutcome: '',
+      platform: 'bolt.new',
+      appLink: '',
+      budget: '',
+    });
     
     setIsSubmitting(false);
-    navigate('/dashboard');
+    
+    // Auto-redirect after 3 seconds
+    setTimeout(() => {
+      navigate('/dashboard');
+    }, 3000);
   };
 
   if (user?.role !== 'creator') {
@@ -86,6 +101,21 @@ export const CreateProjectPage: React.FC = () => {
           Define your challenge and let the swarm intelligence create an optimized execution plan
         </p>
       </div>
+
+      {/* Success Message */}
+      {showSuccess && (
+        <div className="mb-8 bg-green-500/10 border border-green-500/30 rounded-xl p-6">
+          <div className="flex items-center space-x-3">
+            <CheckCircle className="h-6 w-6 text-green-400" />
+            <div>
+              <h3 className="text-lg font-semibold text-green-300">Mission Deployed Successfully!</h3>
+              <p className="text-green-200 mt-1">
+                The swarm intelligence is analyzing your request. Redirecting to dashboard...
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
@@ -153,6 +183,7 @@ export const CreateProjectPage: React.FC = () => {
                 type="button"
                 variant="outline"
                 onClick={() => navigate('/dashboard')}
+                disabled={isSubmitting}
               >
                 Cancel
               </Button>
@@ -160,6 +191,7 @@ export const CreateProjectPage: React.FC = () => {
                 type="submit"
                 loading={isSubmitting}
                 variant="cyber"
+                disabled={showSuccess}
               >
                 {isSubmitting ? 'Deploying Mission...' : 'Deploy Mission'}
               </Button>

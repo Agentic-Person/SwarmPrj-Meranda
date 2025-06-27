@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { mockProjects, mockUsers, mockMessages } from '../../utils/mockData';
+import { mockProjects, mockUsers, mockMessages, refreshMockData } from '../../utils/mockData';
 import { Button } from '../../components/UI/Button';
 import { Textarea } from '../../components/UI/Textarea';
 import { 
@@ -22,11 +22,24 @@ export const ProjectDetailPage: React.FC = () => {
   const { user } = useAuth();
   const [newMessage, setNewMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [project, setProject] = useState(mockProjects.find(p => p.id === id));
+  const [creator, setCreator] = useState<any>(null);
+  const [finisher, setFinisher] = useState<any>(null);
+  const [projectMessages, setProjectMessages] = useState(mockMessages.filter(m => m.projectId === id));
 
-  const project = mockProjects.find(p => p.id === id);
-  const creator = project ? mockUsers.find(u => u.id === project.creatorId) : null;
-  const finisher = project?.finisherId ? mockUsers.find(u => u.id === project.finisherId) : null;
-  const projectMessages = mockMessages.filter(m => m.projectId === id);
+  // Refresh data when component mounts or project ID changes
+  useEffect(() => {
+    refreshMockData();
+    const foundProject = mockProjects.find(p => p.id === id);
+    setProject(foundProject);
+    
+    if (foundProject) {
+      setCreator(mockUsers.find(u => u.id === foundProject.creatorId));
+      setFinisher(foundProject.finisherId ? mockUsers.find(u => u.id === foundProject.finisherId) : null);
+    }
+    
+    setProjectMessages(mockMessages.filter(m => m.projectId === id));
+  }, [id]);
 
   if (!project || !creator) {
     return (
