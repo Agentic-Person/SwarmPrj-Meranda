@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import { User } from '../types';
-import { mockUsers, updateUserSwarmTokens } from '../utils/mockData';
+import { mockUsers, updateUserSwarmTokens, addMockUser } from '../utils/mockData';
 
 interface AuthContextType {
   user: User | null;
@@ -19,6 +19,76 @@ export const useAuth = () => {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
+};
+
+// Helper function to get all users from localStorage
+const getAllUsers = (): User[] => {
+  try {
+    const stored = localStorage.getItem('app-finisher-all-users');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      return parsed.map((user: any) => ({
+        ...user,
+        createdAt: new Date(user.createdAt),
+      }));
+    }
+  } catch (error) {
+    console.warn('Failed to load users from localStorage:', error);
+  }
+  return [...mockUsers]; // Return copy of mock users as default
+};
+
+// Helper function to save all users to localStorage
+const saveAllUsers = (users: User[]): void => {
+  try {
+    localStorage.setItem('app-finisher-all-users', JSON.stringify(users));
+  } catch (error) {
+    console.warn('Failed to save users to localStorage:', error);
+  }
+};
+
+// Helper function to generate mock wallet for new users
+const generateMockWallet = (userId: string, swarmTokens: number = 1000) => {
+  return {
+    address: `0x${Math.random().toString(16).substr(2, 40)}`,
+    isConnected: true,
+    network: 'ethereum' as const,
+    tokens: [
+      {
+        symbol: 'ETH',
+        name: 'Ethereum',
+        balance: Math.random() * 2 + 0.1,
+        decimals: 18,
+        usdValue: 0,
+        contractAddress: '0x0000000000000000000000000000000000000000',
+      },
+      {
+        symbol: 'USDC',
+        name: 'USD Coin',
+        balance: Math.random() * 500 + 100,
+        decimals: 6,
+        usdValue: 0,
+        contractAddress: '0xA0b86a33E6441c8C4C4C4C4C4C4C4C4C4C4C4C4C',
+      },
+      {
+        symbol: 'SWARM',
+        name: 'SWARM Token',
+        balance: swarmTokens,
+        decimals: 18,
+        usdValue: swarmTokens * 0.85,
+        contractAddress: '0xSWARM1234567890abcdef1234567890abcdef12',
+      },
+    ],
+    nfts: [
+      {
+        id: `nft-${userId}-1`,
+        name: 'AI Agent #' + Math.floor(Math.random() * 9999),
+        collection: 'Swarm Agents',
+        image: 'https://images.pexels.com/photos/8566473/pexels-photo-8566473.jpeg?auto=compress&cs=tinysrgb&w=400',
+        rarity: 'Rare',
+      },
+    ],
+  };
 };
 
 export const useAuthProvider = () => {
@@ -50,8 +120,16 @@ export const useAuthProvider = () => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    const foundUser = mockUsers.find(u => u.email === email);
+    // Get all users (including newly registered ones)
+    const allUsers = getAllUsers();
+    
+    // Find user by email
+    const foundUser = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+    
     if (foundUser) {
+      // In a real app, you'd verify the password hash here
+      // For demo purposes, we'll accept any password for existing users
+      
       // Ensure SWARM tokens are consistent with wallet
       if (foundUser.wallet) {
         const swarmToken = foundUser.wallet.tokens.find(t => t.symbol === 'SWARM');
@@ -76,8 +154,18 @@ export const useAuthProvider = () => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
+    // Get all existing users
+    const allUsers = getAllUsers();
+    
+    // Check if email already exists
+    const existingUser = allUsers.find(u => u.email.toLowerCase() === userData.email?.toLowerCase());
+    if (existingUser) {
+      setIsLoading(false);
+      return false; // Email already exists
+    }
+    
     const newUser: User = {
-      id: Date.now().toString(),
+      id: `user-${Date.now()}`,
       name: userData.name || '',
       email: userData.email || '',
       role: userData.role || 'creator',
@@ -89,7 +177,15 @@ export const useAuthProvider = () => {
       createdAt: new Date(),
       onboardingCompleted: false,
       swarmTokens: 1000, // Start new users with 1000 SWARM tokens
+      wallet: generateMockWallet(`user-${Date.now()}`, 1000),
     };
+    
+    // Add to all users list
+    allUsers.push(newUser);
+    saveAllUsers(allUsers);
+    
+    // Also add to mock data for consistency
+    addMockUser(newUser);
     
     setUser(newUser);
     localStorage.setItem('app-finisher-user', JSON.stringify(newUser));
@@ -109,6 +205,14 @@ export const useAuthProvider = () => {
     
     setUser(userData);
     localStorage.setItem('app-finisher-user', JSON.stringify(userData));
+    
+    // Update in the all users list as well
+    const allUsers = getAllUsers();
+    const userIndex = allUsers.findIndex(u => u.id === userData.id);
+    if (userIndex !== -1) {
+      allUsers[userIndex] = userData;
+      saveAllUsers(allUsers);
+    }
     
     // Update the mock data as well
     updateUserSwarmTokens(userData.id, userData.swarmTokens || 0);

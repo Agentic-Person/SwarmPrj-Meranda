@@ -16,11 +16,28 @@ export const LoginPage: React.FC = () => {
     e.preventDefault();
     setError('');
     
+    if (!email.trim() || !password.trim()) {
+      setError('Please enter both email and password');
+      return;
+    }
+    
     const success = await login(email, password);
     if (success) {
       navigate('/dashboard');
     } else {
-      setError('Invalid email or password');
+      setError('Invalid email or password. Please check your credentials or register a new account.');
+    }
+  };
+
+  // Demo account helper
+  const loginWithDemo = async (demoEmail: string) => {
+    setEmail(demoEmail);
+    setPassword('demo123');
+    setError('');
+    
+    const success = await login(demoEmail, 'demo123');
+    if (success) {
+      navigate('/dashboard');
     }
   };
 
@@ -67,7 +84,9 @@ export const LoginPage: React.FC = () => {
           </div>
 
           {error && (
-            <div className="text-red-400 text-sm">{error}</div>
+            <div className="text-red-400 text-sm bg-red-500/10 border border-red-500/30 rounded-lg p-3">
+              {error}
+            </div>
           )}
 
           <div>
@@ -81,6 +100,37 @@ export const LoginPage: React.FC = () => {
             </Button>
           </div>
         </form>
+
+        {/* Demo Accounts Section */}
+        <div className="mt-8 p-4 bg-slate-800/50 rounded-lg border border-slate-600">
+          <h3 className="text-sm font-medium text-slate-300 mb-3">Demo Accounts</h3>
+          <div className="space-y-2">
+            <button
+              onClick={() => loginWithDemo('alex@example.com')}
+              className="w-full text-left px-3 py-2 text-sm bg-slate-700/50 hover:bg-slate-700 rounded text-slate-300 hover:text-white transition-colors"
+              disabled={isLoading}
+            >
+              <div className="font-medium">Alex Chen (Creator)</div>
+              <div className="text-xs text-slate-400">alex@example.com</div>
+            </button>
+            <button
+              onClick={() => loginWithDemo('sarah@example.com')}
+              className="w-full text-left px-3 py-2 text-sm bg-slate-700/50 hover:bg-slate-700 rounded text-slate-300 hover:text-white transition-colors"
+              disabled={isLoading}
+            >
+              <div className="font-medium">Sarah Johnson (Finisher)</div>
+              <div className="text-xs text-slate-400">sarah@example.com</div>
+            </button>
+            <button
+              onClick={() => loginWithDemo('marcus@example.com')}
+              className="w-full text-left px-3 py-2 text-sm bg-slate-700/50 hover:bg-slate-700 rounded text-slate-300 hover:text-white transition-colors"
+              disabled={isLoading}
+            >
+              <div className="font-medium">Marcus Rodriguez (Finisher)</div>
+              <div className="text-xs text-slate-400">marcus@example.com</div>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
