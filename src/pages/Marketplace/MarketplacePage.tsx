@@ -104,7 +104,7 @@ export const MarketplacePage: React.FC = () => {
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredProjects.map(project => {
-            const creator = mockUsers.find(u => u.id === project.creatorId);
+            const creator = mockUsers.find(u => u.id === project.creatorId) || mockUsers[0];
             return (
               <ProjectCard
                 key={project.id}
