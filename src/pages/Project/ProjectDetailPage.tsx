@@ -6,7 +6,6 @@ import { Button } from '../../components/UI/Button';
 import { Textarea } from '../../components/UI/Textarea';
 import { 
   Calendar, 
-  DollarSign, 
   Globe, 
   User, 
   MessageCircle, 
@@ -14,8 +13,7 @@ import {
   Clock,
   ExternalLink,
   Star,
-  Target,
-  Zap
+  Target
 } from 'lucide-react';
 
 export const ProjectDetailPage: React.FC = () => {
@@ -134,12 +132,6 @@ export const ProjectDetailPage: React.FC = () => {
                     <Calendar className="h-4 w-4" />
                     <span>{new Date(project.createdAt).toLocaleDateString()}</span>
                   </div>
-                  {project.budget && (
-                    <div className="flex items-center space-x-1">
-                      <DollarSign className="h-4 w-4" />
-                      <span>${project.budget}</span>
-                    </div>
-                  )}
                   {project.swarmTokenReward && (
                     <div className="flex items-center space-x-1">
                       <Star className="h-4 w-4 text-yellow-400" />

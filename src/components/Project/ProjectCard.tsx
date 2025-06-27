@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Project, User } from '../../types';
-import { Clock, DollarSign, Globe, User as UserIcon, Star } from 'lucide-react';
+import { Clock, Globe, User as UserIcon, Star } from 'lucide-react';
 import { Button } from '../UI/Button';
 
 interface ProjectCardProps {
@@ -55,12 +55,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                 <Clock className="h-4 w-4" />
                 <span>{new Date(project.createdAt).toLocaleDateString()}</span>
               </div>
-              {project.budget && (
-                <div className="flex items-center space-x-1">
-                  <DollarSign className="h-4 w-4" />
-                  <span>${project.budget}</span>
-                </div>
-              )}
               {project.swarmTokenReward && (
                 <div className="flex items-center space-x-1">
                   <Star className="h-4 w-4 text-yellow-400" />

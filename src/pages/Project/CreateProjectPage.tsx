@@ -21,7 +21,7 @@ const platformOptions = [
 ];
 
 export const CreateProjectPage: React.FC = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -31,7 +31,7 @@ export const CreateProjectPage: React.FC = () => {
     desiredOutcome: '',
     platform: 'bolt.new' as Platform,
     appLink: '',
-    budget: '',
+    missionCost: '',
     swarmTokenReward: '',
   });
 
@@ -43,18 +43,27 @@ export const CreateProjectPage: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
+    const missionCost = formData.missionCost ? parseInt(formData.missionCost) : 0;
+    
+    // Check if user has enough SWARM tokens
+    if (missionCost > 0 && (user?.swarmTokens || 0) < missionCost) {
+      alert(`Insufficient SWARM tokens. You need ${missionCost} SWARM tokens but only have ${user?.swarmTokens || 0}.`);
+      setIsSubmitting(false);
+      return;
+    }
+    
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     // Create the new project object
     const newProject: Project = {
-      id: `project-${Date.now()}`, // Simple unique ID for demo
+      id: `project-${Date.now()}`,
       title: formData.title,
       description: formData.description,
       desiredOutcome: formData.desiredOutcome,
       platform: formData.platform,
       appLink: formData.appLink,
-      budget: formData.budget ? parseInt(formData.budget) : undefined,
+      budget: missionCost || undefined,
       swarmTokenReward: formData.swarmTokenReward ? parseInt(formData.swarmTokenReward) : undefined,
       status: 'open',
       creatorId: user!.id,
@@ -62,10 +71,29 @@ export const CreateProjectPage: React.FC = () => {
       updatedAt: new Date(),
     };
 
-    // Add the project to mock data (this will persist to localStorage)
+    // Add the project to mock data
     addMockProject(newProject);
     
-    // Show success message instead of alert
+    // Deduct SWARM tokens from user if mission cost is specified
+    if (missionCost > 0 && user) {
+      const updatedUser = {
+        ...user,
+        swarmTokens: (user.swarmTokens || 0) - missionCost,
+      };
+      
+      // Update wallet SWARM token balance if wallet exists
+      if (updatedUser.wallet) {
+        const swarmToken = updatedUser.wallet.tokens.find(t => t.symbol === 'SWARM');
+        if (swarmToken) {
+          swarmToken.balance = updatedUser.swarmTokens;
+          swarmToken.usdValue = swarmToken.balance * 0.85;
+        }
+      }
+      
+      updateUser(updatedUser);
+    }
+    
+    // Show success message
     setShowSuccess(true);
     
     // Clear form
@@ -75,7 +103,7 @@ export const CreateProjectPage: React.FC = () => {
       desiredOutcome: '',
       platform: 'bolt.new',
       appLink: '',
-      budget: '',
+      missionCost: '',
       swarmTokenReward: '',
     });
     
@@ -103,6 +131,11 @@ export const CreateProjectPage: React.FC = () => {
         <p className="mt-2 text-slate-300">
           Define your challenge and let the swarm intelligence create an optimized execution plan
         </p>
+        <div className="mt-4 flex items-center space-x-2 text-sm">
+          <Star className="h-4 w-4 text-yellow-400" />
+          <span className="text-slate-300">Your SWARM Balance:</span>
+          <span className="text-yellow-400 font-semibold">{user?.swarmTokens || 0} SWARM</span>
+        </div>
       </div>
 
       {/* Success Message */}
@@ -172,12 +205,12 @@ export const CreateProjectPage: React.FC = () => {
                 
                 <div className="grid md:grid-cols-2 gap-4">
                   <Input
-                    label="Budget Allocation (Optional)"
+                    label="Mission Cost (Optional)"
                     type="number"
-                    value={formData.budget}
-                    onChange={(e) => handleInputChange('budget', e.target.value)}
+                    value={formData.missionCost}
+                    onChange={(e) => handleInputChange('missionCost', e.target.value)}
                     placeholder="0"
-                    helper="Budget in USD for mission completion"
+                    helper="SWARM Tokens required to deploy this mission"
                   />
                   
                   <Input
@@ -260,7 +293,7 @@ export const CreateProjectPage: React.FC = () => {
               <li>• Provide detailed technical specifications</li>
               <li>• Include relevant documentation or examples</li>
               <li>• Specify performance and security requirements</li>
-              <li>• Set realistic timelines and budget expectations</li>
+              <li>• Set realistic timelines and token expectations</li>
             </ul>
           </div>
         </div>
