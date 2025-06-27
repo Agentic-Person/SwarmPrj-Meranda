@@ -71,18 +71,26 @@ export const Header: React.FC = () => {
           <div className="flex items-center space-x-6">
             {user ? (
               <>
-                {/* Treasury Widget - Green */}
+                {/* Treasury Widget - Green with proper dropdown */}
                 <div className="hidden md:block">
-                  <button className="px-6 py-3 bg-green-600/20 hover:bg-green-600/30 text-green-300 hover:text-green-200 rounded-lg border border-green-500/50 hover:border-green-400/70 transition-all duration-300 terminal-font uppercase tracking-wide font-medium text-sm min-w-[120px]">
-                    INVEST
-                  </button>
+                  <TreasuryWidget />
                 </div>
 
-                {/* Wallet Widget - Blue */}
+                {/* Wallet Widget - Blue with proper dropdown */}
                 <div className="hidden md:block">
-                  <button className="px-6 py-3 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 hover:text-blue-200 rounded-lg border border-blue-500/50 hover:border-blue-400/70 transition-all duration-300 terminal-font uppercase tracking-wide font-medium text-sm min-w-[120px]">
-                    WALLET
-                  </button>
+                  <WalletWidget />
+                </div>
+
+                {/* Agent Status */}
+                <div className="hidden lg:flex items-center space-x-3 px-3 py-1 bg-slate-800/50 rounded-lg border border-slate-600">
+                  <div className="flex items-center space-x-2 text-sm">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-green-400 terminal-font text-xs uppercase tracking-wider">ONLINE</span>
+                  </div>
+                  <div className="flex items-center space-x-1 text-sm text-yellow-400">
+                    <Star className="h-3 w-3 fill-current" />
+                    <span className="terminal-font">{user.rating.toFixed(1)}</span>
+                  </div>
                 </div>
 
                 {/* User Profile */}
@@ -93,10 +101,10 @@ export const Header: React.FC = () => {
                     </div>
                     <div className="text-left flex-1">
                       <div className="text-sm font-medium text-white terminal-font truncate">
-                        CodeMaster Alex
+                        {user.agentName || user.name}
                       </div>
                       <div className="text-xs text-purple-300 terminal-font uppercase tracking-wider">
-                        BUILDER AGENT
+                        {user.primaryRole || user.role} AGENT
                       </div>
                     </div>
                   </button>
@@ -192,12 +200,12 @@ export const Header: React.FC = () => {
                   DEPLOY
                 </Link>
               )}
-              <button className="px-4 py-2 bg-green-600/20 text-green-300 rounded-lg border border-green-500/50 text-xs font-medium terminal-font uppercase">
-                INVEST
-              </button>
-              <button className="px-4 py-2 bg-blue-600/20 text-blue-300 rounded-lg border border-blue-500/50 text-xs font-medium terminal-font uppercase">
-                WALLET
-              </button>
+              
+              {/* Mobile Treasury and Wallet */}
+              <div className="flex space-x-2 md:hidden">
+                <TreasuryWidget />
+                <WalletWidget />
+              </div>
             </nav>
           </div>
         )}

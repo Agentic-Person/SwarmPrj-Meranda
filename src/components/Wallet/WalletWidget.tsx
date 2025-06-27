@@ -73,6 +73,7 @@ export const WalletWidget: React.FC = () => {
 
   const wallet = user?.wallet || mockWallet;
   const totalUsdValue = wallet.tokens.reduce((sum, token) => sum + token.usdValue, 0);
+  const swarmBalance = user?.swarmTokens || 1000;
 
   const formatAddress = (address: string) => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -98,22 +99,14 @@ export const WalletWidget: React.FC = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-3 px-4 py-2 bg-slate-800/50 rounded-lg border border-slate-600 hover:border-purple-500/50 transition-all duration-300 group min-w-[140px] h-12"
+        className="px-6 py-3 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 hover:text-blue-200 rounded-lg border border-blue-500/50 hover:border-blue-400/70 transition-all duration-300 terminal-font uppercase tracking-wide font-medium text-sm min-w-[140px] flex items-center justify-center space-x-2"
       >
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-full flex items-center justify-center">
-            <Wallet className="h-4 w-4 text-white" />
-          </div>
-          <div className="hidden sm:block text-left">
-            <div className="text-sm font-medium text-white terminal-font">
-              Web3 Wallet
-            </div>
-            <div className="text-xs text-purple-300 terminal-font">
-              750 SWARM
-            </div>
-          </div>
+        <Wallet className="h-4 w-4" />
+        <div className="flex flex-col items-start">
+          <span>WALLET</span>
+          <span className="text-xs">{swarmBalance} SWARM</span>
         </div>
-        <ChevronDown className={`h-4 w-4 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (

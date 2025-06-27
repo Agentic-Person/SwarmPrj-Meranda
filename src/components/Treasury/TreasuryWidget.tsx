@@ -87,22 +87,11 @@ export const TreasuryWidget: React.FC = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-3 px-4 py-2 bg-slate-800/50 rounded-lg border border-slate-600 hover:border-green-500/50 transition-all duration-300 group min-w-[140px] h-12"
+        className="px-6 py-3 bg-green-600/20 hover:bg-green-600/30 text-green-300 hover:text-green-200 rounded-lg border border-green-500/50 hover:border-green-400/70 transition-all duration-300 terminal-font uppercase tracking-wide font-medium text-sm min-w-[140px] flex items-center justify-center space-x-2"
       >
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
-            <PiggyBank className="h-4 w-4 text-white" />
-          </div>
-          <div className="hidden sm:block text-left">
-            <div className="text-sm font-medium text-white terminal-font">
-              Invest $SWARM
-            </div>
-            <div className="text-xs text-green-300 terminal-font">
-              750 SWARM
-            </div>
-          </div>
-        </div>
-        <ChevronDown className={`h-4 w-4 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        <PiggyBank className="h-4 w-4" />
+        <span>INVEST $SWARM</span>
+        <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
