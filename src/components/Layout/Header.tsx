@@ -52,18 +52,6 @@ export const Header: React.FC = () => {
               >
                 COMMAND CENTER
               </Link>
-              {user.role === 'creator' && (
-                <Link
-                  to="/create-project"
-                  className={`w-40 h-12 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 terminal-font uppercase tracking-wide border flex items-center justify-center ${
-                    isActive('/create-project')
-                      ? 'text-pink-300 bg-pink-500/20 border-pink-500/50 neon-border'
-                      : 'text-slate-300 hover:text-pink-300 hover:bg-slate-800/50 border-slate-600 hover:border-slate-500'
-                  }`}
-                >
-                  DEPLOY MISSION
-                </Link>
-              )}
             </nav>
           )}
 
